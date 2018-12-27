@@ -1,0 +1,46 @@
+--Sql Server 2014 Express Edition
+--Batches are separated by 'go'
+
+select @@version as 'sql server version'
+create table sailors(
+    sid varchar(20),
+    sname varchar(20),
+    rating int,
+    age int,
+    primary key(sid));
+ create table boats(
+     bid varchar(20),
+     bname varchar(20),
+     colour varchar(20),
+     primary key(bid));
+create table reserves(
+    sid varchar(20),
+    bid varchar(20),
+    day date,
+    primary key(sid,bid,day),
+    foreign key(sid) references sailors(sid),
+    foreign key(bid) references boats(bid));
+    
+insert into sailors values('s1','jack',5,40);
+insert into sailors values('s2','vizz',5,21);
+insert into sailors values('s3','varun',3,20);
+insert into sailors values('s4','vivek',1,20);
+insert into sailors values('s5','shreyes',3,20);
+
+insert into boats values('b1','serenity','green');
+insert into boats values('b2','wind dancer','red');
+insert into boats values('b3','orion','red');
+insert into boats values('b4','escape','blue');
+insert into boats values('b5','carpe','violet');
+
+insert into reserves values('s1','b2','01-Jun-2018');
+insert into reserves values('s2','b3','20-Dec-2018');
+insert into reserves values('s2','b4','27-Dec-2018');
+insert into reserves values('s4','b4','14-Mar-2015');
+insert into reserves values('s3','b2','01-Apr-2012');
+
+select distinct sname from sailors s, reserves r where r.sid=s.sid;
+
+select sid from reserves r, boats b where r.bid=b.bid and ( b.colour='red' or b.colour='green'); 
+
+select sid from sailors where sid not in (select s.sid from reserves r, sailors s where r.sid=s.sid);
