@@ -1,0 +1,65 @@
+--Sql Server 2014 Express Edition
+--Batches are separated by 'go'
+
+select @@version as 'sql server version'
+CREATE TABLE SUPPLIER
+(
+Sid int NOT NULL PRIMARY KEY,
+Sname varchar(16) NOT NULL UNIQUE,
+Address varchar(20) NOT NULL
+);
+
+CREATE TABLE PART
+(
+PID int NOT NULL PRIMARY KEY,
+Pname varchar(18) NOT NULL,
+Color varchar(10) NOT NULL,
+);
+
+CREATE TABLE SHIPMENT
+(
+Sid int NOT NULL REFERENCES SUPPLIER,
+PID int NOT NULL REFERENCES PART,
+Cost int NOT NULL,
+PRIMARY KEY (sid,pid)
+);
+ 
+INSERT INTO SUPPLIER VALUES (1, 'Smith', 'London');
+INSERT INTO SUPPLIER VALUES (2, 'Jones', 'Paris');
+INSERT INTO SUPPLIER VALUES (3, 'Blake', 'Paris');
+INSERT INTO SUPPLIER VALUES (4, 'Clark', 'London');
+INSERT INTO SUPPLIER VALUES (5, 'Adams', 'Athens');
+  
+INSERT INTO PART VALUES (1, 'Nut', 'Red');
+INSERT INTO PART VALUES (2, 'Bolt', 'Green');
+INSERT INTO PART VALUES (3, 'Screw', 'Blue');
+INSERT INTO PART VALUES (4, 'Screw', 'Red');
+INSERT INTO PART VALUES (5, 'Cam', 'Blue');
+INSERT INTO PART VALUES (6, 'Cog', 'Red');
+  
+INSERT INTO SHIPMENT VALUES (1, 1, 300);
+INSERT INTO SHIPMENT VALUES (1, 2, 200);
+INSERT INTO SHIPMENT VALUES (1, 3, 400);
+INSERT INTO SHIPMENT VALUES (1, 4, 200);
+INSERT INTO SHIPMENT VALUES (1, 5, 100);
+INSERT INTO SHIPMENT VALUES (1, 6, 100);
+INSERT INTO SHIPMENT VALUES (2, 1, 300);
+INSERT INTO SHIPMENT VALUES (5, 2, 400);
+INSERT INTO SHIPMENT VALUES (3, 2, 200);
+INSERT INTO SHIPMENT VALUES (4, 2, 200);
+INSERT INTO SHIPMENT VALUES (4, 4, 300);
+INSERT INTO SHIPMENT VALUES (4, 5, 400);
+
+select s.sid from supplier s, part p, shipment sh 
+where s.sid=sh.sid and p.pid=sh.pid and p.color='green';
+
+select s.sname,count(*) as count
+from supplier s, shipment sh, part p
+where s.sid=sh.sid and p.pid=sh.pid
+group by s.sname;
+
+update part set color='yellow' where pid in
+(select p.pid from supplier s, shipment sh, part p
+ where s.sid=sh.sid and p.pid=sh.pid and s.sid=3);
+ 
+ --select * from part;
