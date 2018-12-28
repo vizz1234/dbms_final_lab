@@ -1,0 +1,65 @@
+--Sql Server 2014 Express Edition
+--Batches are separated by 'go'
+
+select @@version as 'sql server version'
+
+CREATE TABLE EMPLOYEE (
+Fname VARCHAR(20) NOT NULL,
+Lname VARCHAR(20) NOT NULL,
+Ssn VARCHAR(20) PRIMARY KEY,
+Bdate DATE,
+Address VARCHAR(40),
+Sex CHAR,
+Salary INT,
+Super_ssn VARCHAR(20),
+Dno INT 
+);
+
+CREATE TABLE DEPARTMENT(
+Dname VARCHAR(20) NOT NULL,
+Dnumber INT PRIMARY KEY,
+Mgr_ssn VARCHAR(20) NOT NULL,
+Mgr_start_date DATE,
+FOREIGN KEY (Mgr_ssn) REFERENCES EMPLOYEE(Ssn),
+);
+
+CREATE TABLE DEPENDENT
+(
+Dname VARCHAR(20),
+Essn VARCHAR(20),
+PRIMARY KEY(Essn, Dname),
+FOREIGN KEY (Essn) REFERENCES EMPLOYEE(Ssn)
+);
+
+INSERT INTO EMPLOYEE Values('John','Smith', 123456789, '09-JAN-65', '731 Fondren, Houston, TX', 'M', 30000, NULL, 1);
+INSERT INTO EMPLOYEE Values('Franklin','Wong', 333445555, '08-DEC-55', '638 Voss, Houston, TX', 'M', 40000, NULL, 1);
+INSERT INTO EMPLOYEE Values('Alicia','Zelaya', 999887777, '19-JAN-68', '3321 Castle, Spring, TX', 'F', 25000, NULL, 2);
+INSERT INTO EMPLOYEE Values('Jennifer','Wallace', 987654321, '01-JAN-65', '731 Fondren, Houston, TX', 'F', 43000, NULL, 2);
+INSERT INTO EMPLOYEE Values('Ramesh','Narayan', 666884444, '01-JAN-65', '731 Fondren, Houston, TX', 'M', 38000, NULL, 3);
+INSERT INTO EMPLOYEE Values('Joyce','English', 453453453, '01-JAN-65', '731 Fondren, Houston, TX', 'F', 25000, NULL, 4);
+INSERT INTO EMPLOYEE Values('Ahmad','Jabbar', 987987987, '01-JAN-65', '731 Fondren, Houston, TX', 'M', 25000, NULL, 5);
+INSERT INTO EMPLOYEE Values('James','Borg', 888665555, '01-JAN-65', '731 Fondren, Houston, TX', 'M', 55000, NULL, 5);
+
+INSERT INTO DEPARTMENT Values('Research',5,'333445555','22-MAY-1988');
+INSERT INTO DEPARTMENT Values('Administration',4,'987654321','01-JAN-1995');
+INSERT INTO DEPARTMENT Values('Headquarters',1,'888665555','19-JUN-1981');
+INSERT INTO DEPARTMENT Values('tech-Development',2,'666884444','22-MAY-1988');
+INSERT INTO DEPARTMENT Values('tech-Management',3,'999887777','01-JAN-1995');
+
+INSERT INTO DEPENDENT VALUES('Alice','333445555');
+INSERT INTO DEPENDENT VALUES('Theodore','333445555');
+INSERT INTO DEPENDENT VALUES('Joy','333445555');
+INSERT INTO DEPENDENT VALUES('Abner','987654321');
+INSERT INTO DEPENDENT VALUES('Michael','123456789');
+INSERT INTO DEPENDENT VALUES('Alice','123456789');
+INSERT INTO DEPENDENT VALUES('Elizabeth','123456789');
+
+select avg(salary) as avg_sal, dname 
+from employee, department
+where dno=dnumber
+group by dname;
+
+select distinct fname from employee, department, dependent
+where mgr_ssn=essn and essn=ssn;
+
+select * from department where dname like '%tech%';
