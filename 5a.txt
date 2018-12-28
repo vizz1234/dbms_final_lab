@@ -51,4 +51,4 @@ select * from aircraft order by crange;
 select distinct e.ename 
 from certified c, aircraft a, employees e 
 where c.eid=e.eid and a.aid=c.aid 
-and a.crange>3000 and a.aname!='Boeing';
+and a.crange>3000 and a.aname<>'Boeing';
