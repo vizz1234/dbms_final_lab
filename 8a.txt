@@ -1,0 +1,73 @@
+--Sql Server 2014 Express Edition
+--Batches are separated by 'go'
+
+select @@version as 'sql server version'
+create table player(
+    pid varchar(20),
+    lname varchar(20),
+    fname varchar(20),
+    country varchar(20),
+    yborn int,
+    bplace varchar(20),
+    primary key(pid));
+    
+    
+create table match(
+    matchid varchar(20),
+    team1 varchar(20),
+    team2 varchar(20),
+    ground varchar(20),
+    mdate date,
+    winner varchar(20),
+    primary key(matchid));
+
+create table batting(
+    matchid varchar(20),
+    pid varchar(20),
+    nruns int,
+    fours int,
+    sixes int,
+    primary key(matchid,pid),
+    foreign key(matchid) references match(matchid),
+    foreign key(pid) references player(pid));
+
+
+create table bowling(
+    matchid varchar(20),
+    pid varchar(20),
+    novers int,
+    maidens int,
+    nruns int,
+    nwickets int,
+    primary key(matchid,pid),
+    foreign key(matchid) references match(matchid),
+    foreign key(pid) references player(pid));
+    
+insert into player values('18','kohli','virat','India',1988,'delhi');
+insert into player values('7','dhoni','mahendra','india',1981,'ranchi');
+insert into player values('10','smith','steven','australia',1987,'melbourne');
+insert into player values('99','ashwin','ravi','India',1988,'chennai');
+insert into player values('50','warner','david','australia',1985,'sydney');
+
+insert into match values('1','australia','india','mcg','26-Dec-2018','india');
+insert into match values('2','india','pakistan','sharjhah','23-Aug-2018','india');
+insert into match values('3','australia','new zealand','adelaide','25-Mar-2015','australia');
+insert into match values('4','australia','england','edgbaston','12-Nov-2017','australia');
+insert into match values('2689','india','west indies','wankhede','18-Mar-2016','west indies');
+
+insert into batting values('2689','7',139,12,6);
+insert into batting values('1','18',123,12,0);
+insert into batting values('2','7',31,2,1);
+insert into batting values('3','10',65,8,2);
+insert into batting values('4','50',95,10,0);
+
+--insert bowlers values
+
+select ground from match where team1='australia' order by ground;
+
+select * from match m
+where m.matchid in 
+(select b.matchid from batting b, player p where b.pid=p.pid and p.lname='dhoni');
+
+select p.fname,p.lname from batting b, player p where b.pid=p.pid and b.matchid='2689';
+
