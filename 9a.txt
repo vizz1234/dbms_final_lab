@@ -90,7 +90,7 @@ select cname from customer where
 
 select sum(oamt) as total,odate from order1 group by odate;
 
-select * 
+select c.cno,c.cname,c.ccity
 from customer c, order1 o
 where o.ocno=c.cno and 
 o.oamt=(select max(oamt) from order1);
