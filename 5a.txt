@@ -49,6 +49,7 @@ where c.eid=e.eid and a.aid=c.aid and a.aname='Boeing';
 select * from aircraft order by crange;
 
 select distinct e.ename 
-from certified c, aircraft a, employees e 
-where c.eid=e.eid and a.aid=c.aid 
-and a.crange>3000 and a.aname<>'Boeing';
+from employees e,aircraft a,certified c
+where a.aid=c.aid and c.eid=e.eid and a.crange>3000 and e.ename not in
+(select e.ename from employees e, certified c, aircraft a where e.eid=c.eid and c.aid=a.aid and a.aname='Boeing');
+
